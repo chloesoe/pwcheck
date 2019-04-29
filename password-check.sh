@@ -1,6 +1,9 @@
 #!/bin/bash
 read -s -p "Please enter the password you want to check:" password
 
+printf "\n\n"
+echo "INFO: your entered password has `echo -n $password | wc -m` characters"
+
 # convert to SHA1 and create pre- and suffix
 mysha="$(echo -n $password | sha1sum | awk '{print toupper($1)}')"
 prefix=${mysha:0:5}
@@ -18,6 +21,8 @@ if [ $? -ne 0 ]
 then
     echo "Password not found on api.pwnedpasswords.com"
 else
+    RED='\033[1;31m'
+    NC='\033[0m' # No Color
     appearance=`echo -n ${result} | cut -f2 -d: | sed -e 's/\r//'`
-    echo "PW have been seen $appearance times. Don't use it!!!"
+    printf "PW have been seen ${RED} $appearance ${NC} times. ${RED} Don't use ${NC} it!!!\n"
 fi
